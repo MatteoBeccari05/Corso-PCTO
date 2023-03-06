@@ -5,28 +5,23 @@
 
 int main(int argc, char *argv[])
 {
+    int pid[argc];
 
-    if (argc < 2)
-    {
-        printf("Numero argomenti sbagliato\n");
-        exit(1);
-    }
-
-    int pids[argc - 2];
     for (int i = 1; i < argc; i++)
     {
-        pids[i - 1] = fork();
-        if (pids[i - 1] == 0)
+        pid[i] = fork();                    //eseguo la fork 
+        if (pid[i] == 0)
         {
             execl("/usr/bin/rm", "rm", argv[i], NULL);
-            printf("Exec ha terminato con errori");
-            return -1;
+            printf("Errore execl");
+            return -1;                                    //torna -1 se la execl non va a buon fine 
         }
     }
 
     for (int i = 0; i < argc - 2; i++)
     {
-        wait(&pids[i]);
+        wait(&pid[i]);                  //aspetto che il processo figlio finisca la sua esecuzione 
     }
+    
     return 0;
 }
